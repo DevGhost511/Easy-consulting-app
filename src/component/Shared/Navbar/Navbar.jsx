@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import './Navbar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,10 +7,11 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import PopOver from '../PopOver/PopOver';
-import { UserContext } from '../../../App';
+import { useAppContext } from '../../../context';
+
 
 const NavBar = () => {
-    const { user } = useContext(UserContext)
+    const { state: { user } } = useAppContext()
     const [isSticky, setSticky] = useState(false)
 
     useEffect(() => {
@@ -27,15 +28,15 @@ const NavBar = () => {
     return (
         <Navbar className={`navbar navbar-expand-lg navbar-light ${isSticky ? "navStyle" : "navDefault"}`} expand="lg">
             <Container>
-                <Navbar.Brand as={Link} exact to="/" onClick={scrollTop} className="navBrn">
-                    <FontAwesomeIcon icon={faBuffer} className="brnIcon" /> Trusted <span className="navHighlight">Tech</span>
+                <Navbar.Brand as={Link} to="/" onClick={scrollTop} className="navBrn">
+                    <FontAwesomeIcon icon={faBuffer} className="brnIcon" /> Easy <span className="navHighlight">Consulting</span>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto mainNav" activeKey="/home">
                         <Nav.Item>
-                            <Nav.Link as={Link} exact to="/" className="nav-link" onClick={() => window['scrollTo']({ top: 0, behavior: 'smooth' })}>Home</Nav.Link>
+                            <Nav.Link as={Link} to="/" className="nav-link" onClick={() => window['scrollTo']({ top: 0, behavior: 'smooth' })}>Home</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="#services" className="nav-link">Services</Nav.Link>
@@ -52,7 +53,9 @@ const NavBar = () => {
                         <Nav.Item>
                             {
                                 user.email ?
-                                    <PopOver /> :
+                                    <div>
+                                        <PopOver />
+                                    </div> :
                                     <Link to="/login">
                                         <button className="loginBtn">Login</button>
                                     </Link>

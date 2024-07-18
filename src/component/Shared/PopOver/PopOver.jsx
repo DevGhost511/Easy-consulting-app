@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 import { Button, Overlay } from 'react-bootstrap';
 import Popover from 'react-bootstrap/Popover'
 import './PopOver.css';
 import toast from 'react-hot-toast';
-import { UserContext } from '../../../App';
 import { handleSignOut } from '../../Login/LoginManager';
+import { SET_USER, useAppContext } from '../../../context';
 
 const PopOver = () => {
-    const { user: {name,email, img}, setUser} = useContext(UserContext);
+    const { state:{user: { name, email, img }}, dispatch} = useAppContext()
     const [show, setShow] = useState(false);
     const [target, setTarget] = useState(null);
     const ref = useRef(null);
@@ -22,14 +22,15 @@ const PopOver = () => {
         handleSignOut()
         .then(res => {
             toast.dismiss(loading);
-            setUser(res)
+            console.log(res);
+            dispatch({type: SET_USER, payload: res})
             toast.error('Logged Out!');
         })
     }
     return (
-        <div ref={ref}>
+        <div >
             <img src={img} alt="" onClick={handleClick} className="popImg"/>
-            <Overlay
+             <Overlay
                 show={show}
                 target={target}
                 placement="bottom"
@@ -37,14 +38,14 @@ const PopOver = () => {
                 containerPadding={50}
             >
                 <Popover id="popover-contained">
-                    <Popover.Content className="text-center">
+                    <div className="text-center">
                         <img src={img} alt="" className="popUserImg"/>
                         <p className="userName">{`${name}`}</p>
                         <p className="userEmail">{email}</p>
                         <Button variant="outline-danger" size="sm" onClick={signOut}>Log out</Button>
-                    </Popover.Content>
-                </Popover>
-            </Overlay>
+                    </div>
+                 </Popover> 
+            </Overlay> 
         </div>
     );
 };
